@@ -1,0 +1,18 @@
+# Behave Framework
+behave==1.2.6
+
+# Selenium WebDriver
+selenium==4.15.2
+
+# Python Dotenv (variáveis de ambiente)
+python-dotenv==1.0.0
+
+# Utilities
+requests==2.31.0
+
+# Reporting
+allure-behave==2.13.2
+
+# Code quality
+pylint==3.0.0
+black==23.11.0

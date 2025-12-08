@@ -1,0 +1,41 @@
+# Pastas do sistema
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Ambiente virtual
+.venv/
+venv/
+env/
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# Reports e Logs
+reports/
+*.log
+allure-results/
+allure-report/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Anotações e estudos
+anotacoes/
+
+# Cache
+.pytest_cache/
+.behave/
