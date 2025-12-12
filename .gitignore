@@ -25,9 +25,8 @@ env/
 
 # Reports e Logs
 reports/
+output/
 *.log
-allure-results/
-allure-report/
 
 # OS
 .DS_Store
