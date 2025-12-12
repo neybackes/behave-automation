@@ -1,4 +1,5 @@
 # language: pt
+# encoding: utf-8
 Funcionalidade: Exemplo de Teste
   Descrição: Template de feature para testes com Behave
 
