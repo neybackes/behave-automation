@@ -1,7 +1,7 @@
 # language: pt
 # encoding: utf-8
-Funcionalidade: Exemplo de Teste
-  Descrição: Template de feature para testes com Behave
+Funcionalidade: Acessa página inicial da aplicação
+  Descrição: Acessando página inicial para verificar se está funcionando corretamente
 
   Cenário: Acessar página inicial
     Dado que acesso a aplicação
