@@ -7,3 +7,4 @@ Funcionalidade: Acessa página inicial da aplicação
     Dado que acesso a aplicação
     Quando a página carrega
     Então devo ver a página inicial
+  

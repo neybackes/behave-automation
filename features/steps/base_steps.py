@@ -1,7 +1,7 @@
 from behave import *
 from pages.base_page import BasePage
-import time
 
+#como acoplar em varios cenarios? 
 @given("que acesso a aplicação")
 def step_access_application(context):
     """Acessa a URL base da aplicação"""
@@ -18,7 +18,7 @@ def step_page_loads(context):
 
 
 @then("devo ver a página inicial")
-def step_see_homepage(context):
+def step_see_homepage(context: object):
     """Verifica se a página inicial está visível"""
     expected_title = "Buger Eats"
     actual_title = context.page.get_title()

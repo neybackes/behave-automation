@@ -5,11 +5,10 @@ Configura driver, contexto e hooks
 
 from support.drivers.driver_manager import DriverManager
 from support.utils.env_config import EnvConfig
-from selenium import webdriver
 
 
-def before_all(context):
-    """Executa antes de todos os cenários"""
+
+def before_all(context: object) -> None:
     print("\n=== Iniciando Testes de Automação ===\n")
 
 
@@ -20,8 +19,7 @@ def before_scenario(context, scenario):
     # Carrega configurações de ambiente
     env = EnvConfig()
     context.base_url = env.get_base_url()
-    context.username = env.get_username()
-    context.password = env.get_password()
+   
 
     # Cria instância do driver com opções para suprimir logs
     context.driver = DriverManager.create_chrome_driver(
