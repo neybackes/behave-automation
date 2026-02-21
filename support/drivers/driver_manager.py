@@ -4,16 +4,15 @@ Gerencia a criação e fechamento do navegador
 """
 
 from selenium import webdriver
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.options import Options
-import os
+
 
 
 class DriverManager:
     """Gerencia instâncias do WebDriver"""
 
     @staticmethod
-    def create_chrome_driver(headless=False, implicit_wait=10):
+    def create_chrome_driver(headless: bool = False, implicit_wait: int = 10) -> webdriver.Chrome:
         """
         Cria uma instância do Chrome WebDriver
 
@@ -45,7 +44,7 @@ class DriverManager:
         return driver
 
     @staticmethod
-    def close_driver(driver):
+    def close_driver(driver: webdriver.Chrome) -> None:
         """
         Fecha a instância do WebDriver
 

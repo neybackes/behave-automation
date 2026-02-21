@@ -5,15 +5,14 @@ Configura driver, contexto e hooks
 
 from support.drivers.driver_manager import DriverManager
 from support.utils.env_config import EnvConfig
+import behave.runner #type: ignore
+import behave.model #type: ignore
 
-
-
-def before_all(context: object) -> None:
+def before_all(context: behave.runner.Context) -> None:
     print("\n=== Iniciando Testes de Automação ===\n")
 
 
-def before_scenario(context, scenario):
-    """Executa antes de cada cenário"""
+def before_scenario(context: behave.runner.Context, scenario: behave.model.Scenario) -> None:
     print(f"\nExecutando: {scenario.name}")
 
     # Carrega configurações de ambiente
@@ -27,19 +26,17 @@ def before_scenario(context, scenario):
     )
 
 
-def after_scenario(context, scenario):
-    """Executa depois de cada cenário"""
+def after_scenario(context: behave.runner.Context, scenario: behave.model.Scenario) -> None:
     if scenario.status == "failed":
         print(f"\n❌ Cenário FALHOU: {scenario.name}")
-        # Aqui você pode capturar screenshots se necessário
+       
     else:
         print(f"\n✅ Cenário PASSOU: {scenario.name}")
-
-    # Fecha o driver
+   
     if hasattr(context, "driver"):
         DriverManager.close_driver(context.driver)
 
 
-def after_all(context):
-    """Executa depois de todos os cenários"""
+def after_all(context: behave.runner.Context) -> None:
+    
     print("\n=== Testes Finalizados ===\n")
