@@ -1,116 +1,78 @@
-"""
-Página base para Page Object Model (POM)
-Contém métodos comuns reutilizáveis
-"""
-
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 
 
 class BasePage:
-    """Classe base para todas as páginas"""
 
-    def __init__(self, driver):
-        """
-        Inicializa a página
-
-        Args:
-            driver (WebDriver): Instância do WebDriver
-        """
+    def __init__(self, driver: WebDriver)  -> None:
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
 
-    def wait_element_visible(self, locator, timeout=10):
-        """
-        Aguarda um elemento ficar visível
+    def open(self, url: str) -> None:
+        self.driver.get(url)
+        print(f"✓ Acessando a página: {url}")
 
-        Args:
-            locator (tuple): Tupla (By.*, valor) do localizador
-            timeout (int): Tempo máximo de espera em segundos
+    def wait_page_load(self, timeout: int=10) -> None:
+        WebDriverWait(self.driver, timeout).until(
+            lambda driver: driver.execute_script("return document.readyState") == "complete"
+        )
+        print("✓ Página carregada")
 
-        Returns:
-            WebElement: Elemento encontrado
-        """
+    def get_title(self, expected_title: str) -> None:
+        actual_title = self.driver.title
+        if expected_title and expected_title != actual_title:
+            raise AssertionError(f"Título esperado '{expected_title}' não corresponde ao título atual '{actual_title}'")
+        print(f"✓ Título validado: {actual_title}")
+        
+    
+    def wait_element_visible(self, locator_tuple: tuple, timeout: int = 10)-> WebElement:
         wait = WebDriverWait(self.driver, timeout)
-        return wait.until(EC.visibility_of_element_located(locator))
+        print(f"✓ Aguardando elemento visível: {locator_tuple} (timeout: {timeout}s)")
+        locator = wait.until(EC.visibility_of_element_located(locator_tuple))
+        print(f"✓ Elemento visível: {locator}")
+        return locator
+        
+    def get_text(self, selector: str, locator: str, expected_text: str) -> None:
+        element = self.wait_element_visible((selector, locator))
+        actual_text = element.text
+        assert expected_text in actual_text, f"Texto esperado '{expected_text}' não encontrado. Texto atual: '{actual_text}'"
+        print(f"✓ Texto validado: {actual_text}")
 
-    def wait_element_clickable(self, locator, timeout=10):
-        """
-        Aguarda um elemento ficar clicável
 
-        Args:
-            locator (tuple): Tupla (By.*, valor) do localizador
-            timeout (int): Tempo máximo de espera em segundos
+    def find_element(self, selector: str, locator: str) -> WebElement:
+        element = self.wait_element_visible((selector, locator))
+        element.is_displayed()
+        print(f"✓ Elemento encontrado: {locator}")
+        return element
 
-        Returns:
-            WebElement: Elemento encontrado
-        """
-        wait = WebDriverWait(self.driver, timeout)
-        return wait.until(EC.element_to_be_clickable(locator))
-
-    def find_element(self, locator):
-        """
-        Encontra um elemento na página
-
-        Args:
-            locator (tuple): Tupla (By.*, valor) do localizador
-
-        Returns:
-            WebElement: Elemento encontrado
-        """
-        return self.driver.find_element(*locator)
-
-    def click(self, locator):
-        """
-        Clica em um elemento
-
-        Args:
-            locator (tuple): Tupla (By.*, valor) do localizador
-        """
-        element = self.wait_element_clickable(locator)
+    def click(self, locator_tuple: tuple) -> None:
+        element = self.wait_element_visible(locator_tuple)
         element.click()
+        print(f"✓ Elemento clicado: {locator_tuple}")
 
-    def fill_input(self, locator, text):
-        """
-        Preenche um campo de entrada
+    def check_load_time(self, max_time: int = 3) -> None:
+        start_time = self.driver.execute_script("return performance.timing.navigationStart")
+        load_time = (self.driver.execute_script("return performance.timing.loadEventEnd") - start_time) / 1000
+        assert load_time <= max_time, f"Tempo de carregamento {load_time:.2f}s excede o limite de {max_time}s"
+        print(f"✓ Tempo de carregamento: {load_time:.2f}s")
+    
+    def check_resources_loaded(self) -> None:
+        resources = self.driver.execute_script("return window.performance.getEntriesByType('resource');")
+        failed_resources = [res for res in resources if res.get('status', 200) >= 400]
+        assert not failed_resources, f"Recursos com falha de carregamento: {failed_resources}"
+        print("✓ Todos os recursos carregados corretamente")
 
-        Args:
-            locator (tuple): Tupla (By.*, valor) do localizador
-            text (str): Texto a ser digitado
-        """
-        element = self.wait_element_visible(locator)
-        element.clear()
-        element.send_keys(text)
+    # def fill_input(self, locator, text):
+    #     """
+    #     Preenche um campo de entrada
 
-    def get_text(self, locator):
-        """
-        Obtém o texto de um elemento
+    #     Args:
+    #         locator (tuple): Tupla (By.*, valor) do localizador
+    #         text (str): Texto a ser digitado
+    #     """
+    #     element = self.wait_element_visible(locator)
+    #     element.clear()
+    #     element.send_keys(text)
 
-        Args:
-            locator (tuple): Tupla (By.*, valor) do localizador
-
-        Returns:
-            str: Texto do elemento
-        """
-        element = self.wait_element_visible(locator)
-        return element.text
-
-    def is_element_visible(self, locator, timeout=5):
-        """
-        Verifica se um elemento está visível
-
-        Args:
-            locator (tuple): Tupla (By.*, valor) do localizador
-            timeout (int): Tempo máximo de espera em segundos
-
-        Returns:
-            bool: True se visível, False caso contrário
-        """
-        try:
-            WebDriverWait(self.driver, timeout).until(
-                EC.visibility_of_element_located(locator)
-            )
-            return True
-        except:
-            return False

@@ -1,268 +1,104 @@
-# README - Automação de Testes com Behave e Selenium
 
-## Descrição do Projeto
+# behave_automation
 
-Projeto de automação de testes web para a aplicação **Buger Eats** utilizando:
-- **Behave**: Framework BDD (Behavior Driven Development)
-- **Selenium**: Automação de navegador web
-- **Python**: Linguagem de programação
+Bem-vindo(a) ao **projeto behave_automation**! Este projeto implementa uma suíte de E2E em linguagem natural, utilizando Behave e Selenium, com arquitetura desacoplada baseada no padrão Page Object.
 
-## Estrutura do Projeto
+## Sobre o projeto
+Este repositório foi pensado para aproximar os requisitos de negócio da implementação técnica, utilizando o Behave como facilitador. Os cenários de teste são escritos em linguagem natural (Gherkin), permitindo que a lógica seja baseada no comportamento real e tornando os testes compreensíveis para pessoas não técnicas, como analistas de negócios, POs (Product Owners) e stakeholders.
 
+### Behavex
+O projeto utiliza o Behavex, uma extensão do Behave que traz recursos avançados para relatórios, organização e customização dos testes orientados ao comportamento. Com o Behavex, é possível gerar relatórios HTML detalhados, capturar imagens e desacoplar ainda mais as responsabilidades, além de facilitar a integração de novas funcionalidades e a manutenção do projeto.
+
+Principais benefícios do Behavex:
+- Relatórios customizados e interativos
+- Extensões para hooks, tags e filtros
+- Melhor desacoplamento entre steps, pages e suporte
+- Facilidade para integração com pipelines e CI/CD
+
+
+## Requisitos
+- Python 3.8+ (recomenda-se versão mais recente)
+- Behave
+- Selenium
+- Acesso o página: `https://buger-eats.vercel.app/`
+- (Em breve) Poetry para gerenciamento de dependências
+
+## Como começar
+Clone o repositório:
+```bash
+git clone <url-do-repo>
+cd behave_automation
 ```
-behave_automation/
-├── features/                    # Cenários de teste (Gherkin)
-│   ├── steps/                   # Implementação dos steps
-│   │   └── steps_exemplo.py
-│   ├── pages/                   # Page Object Model
-│   │   └── base_page.py
-│   ├── environment.py           # Hooks do Behave
-│   └── exemplo.feature          # Features de exemplo
-│
-├── support/                     # Suporte e utilitários
-│   ├── drivers/                 # Gerenciamento de drivers
-│   │   └── driver_manager.py
-│   └── utils/                   # Funções utilitárias
-│       └── env_config.py
-│
-├── reports/                     # Relatórios de execução
-│
-├── anotacoes/                   # Anotações de estudo (ignorado no git)
-│
-├── .env                         # Variáveis de ambiente (ignorado no git)
-├── .env.example                 # Template de variáveis
-├── .gitignore                   # Arquivos ignorados pelo git
-├── behave.ini                   # Configuração do Behave
-├── requirements.txt             # Dependências Python
-└── README.md                    # Este arquivo
-```
-
-## Instalação e Configuração
-
-### 1. Criar Ambiente Virtual
-
+Crie e ative o ambiente virtual:
 ```bash
 python -m venv .venv
+source .venv/Scripts/activate  # Windows
 ```
-
-### 2. Ativar Ambiente Virtual
-
-**Windows (CMD):**
-```cmd
-.venv\Scripts\activate
-```
-
-**Windows (PowerShell):**
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-**macOS/Linux:**
-```bash
-source .venv/bin/activate
-```
-
-### 3. Instalar Dependências
-
+Instale as dependências:
 ```bash
 pip install -r requirements.txt
 ```
+**Configure as variáveis de ambiente:**
+	Crie um arquivo `.env` na raiz (um exemplo já está presente):
+	```env
+	BASE_URL=https://buger-eats.vercel.app/
+	```
 
-### 4. Configurar Variáveis de Ambiente
+(Em breve: migração para Poetry)
 
-Copie o arquivo `.env.example` para `.env` e configure:
-
+## Rodando os testes
+Execute os testes BDD:
 ```bash
-cp .env.example .env
+behavex
 ```
+Os relatórios são gerados em output/report.html e output/report.json.
 
-Edite o arquivo `.env` com seus dados:
-```
-BASE_URL=https://buger-eats.vercel.app/
-USERNAME=seu_usuario
-PASSWORD=sua_senha
-HEADLESS=false
-TIMEOUT=10
-```
+## Estrutura do projeto
+features/           # Cenários BDD e steps
+	nav.feature       # Exemplo de feature
+	environment.py    # Configuração Behave
+	pages/            # Page Objects
+		base_page.py    # Base para páginas
+	steps/            # Steps definitions
+		base_steps.py   # Base para steps
+support/            # Suporte e drivers
+	drivers/          # Gerenciamento de drivers Selenium
+		driver_manager.py
+	utils/            # Utilitários e configs
+		env_config.py
+output/             # Relatórios e logs
+requirements.txt    # Dependências atuais
+behave.ini          # Configuração Behave
+README.md           # Este guia
 
-## Executar Testes
-
-### Executar Todos os Testes
-
-```bash
-behave
-```
-
-### Executar com Formatação Específica
-
-```bash
-behave --format pretty
-```
-
-### Executar Feature Específica
-
-```bash
-behave features/exemplo.feature
-```
-
-### Executar com Tags
-
-```bash
-behave --tags=@importante
-```
-
-### Modo Headless (sem interface)
-
-Edite o `.env` e configure:
-```
-HEADLESS=true
-```
-
-## Page Object Model (POM)
-
-### Por que usar POM?
-
-- **Manutenção**: Alterações em localizadores em um único lugar
-- **Reutilização**: Métodos de página podem ser reutilizados
-- **Legibilidade**: Código mais limpo e organizado
-
-### Exemplo de Página
-
+## Exemplo prático
 ```python
-from selenium.webdriver.common.by import By
 from features.pages.base_page import BasePage
+from support.drivers.driver_manager import DriverManager
 
-class LoginPage(BasePage):
-    # Localizadores
-    USERNAME_INPUT = (By.ID, "username")
-    PASSWORD_INPUT = (By.ID, "password")
-    LOGIN_BUTTON = (By.ID, "login-btn")
-    ERROR_MESSAGE = (By.CLASS_NAME, "error-msg")
-
-    # Métodos
-    def fill_username(self, username):
-        self.fill_input(self.USERNAME_INPUT, username)
-
-    def fill_password(self, password):
-        self.fill_input(self.PASSWORD_INPUT, password)
-
-    def click_login(self):
-        self.click(self.LOGIN_BUTTON)
-
-    def get_error_message(self):
-        return self.get_text(self.ERROR_MESSAGE)
+driver = DriverManager().get_driver()
+page = BasePage(driver)
+page.navigate_to('https://exemplo.com')
 ```
 
-## Estrutura de um Cenário Behave
+## Integração Contínua
+(Ainda a ser implementado) Workflow automatizado com GitHub Actions para rodar testes e checar estilo a cada push/pull request.
 
-### Feature File (`.feature`)
+## Convenções e estilo
+- Estrutura desacoplada e reutilizável
+- Page Object para organização
+- Steps claros e objetivos
+- Tageamento @smoke, @perfomance...
+- Relatórios HTML e JSON
+- (Em breve) Poetry para dependências
 
-```gherkin
-# language: pt
-Funcionalidade: Login na aplicação
-  Como usuário
-  Desejo fazer login
-  Para acessar minha conta
+### Pontos pendentes
+- Implementação dos fluxos de formulário
+- Migração para Poetry
+- CI/CD com GitHub Actions
 
-  Cenário: Login com credenciais válidas
-    Dado que estou na página de login
-    Quando preencho usuário "usuario@test.com"
-    E preencho senha "senha123"
-    E clico no botão entrar
-    Então devo ser redirecionado para o dashboard
-```
+## Bora contribuir?
+Pull requests são super bem-vindos! Ideias, sugestões ou dúvidas, abra uma issue.
 
-### Implementation (`.py`)
-
-```python
-from behave import given, when, then
-from features.pages.login_page import LoginPage
-
-@given("que estou na página de login")
-def step_goto_login(context):
-    context.driver.get(f"{context.base_url}/login")
-    context.login_page = LoginPage(context.driver)
-
-@when('preencho usuário "{username}"')
-def step_fill_username(context, username):
-    context.login_page.fill_username(username)
-
-@when('preencho senha "{password}"')
-def step_fill_password(context, password):
-    context.login_page.fill_password(password)
-
-@when("clico no botão entrar")
-def step_click_login(context):
-    context.login_page.click_login()
-
-@then("devo ser redirecionado para o dashboard")
-def step_verify_dashboard(context):
-    assert "/dashboard" in context.driver.current_url
-```
-
-## Variáveis de Ambiente
-
-### Carregando Variáveis
-
-```python
-from support.utils.env_config import EnvConfig
-
-env = EnvConfig()
-base_url = env.get_base_url()
-username = env.get_username()
-password = env.get_password()
-```
-
-## Boas Práticas
-
-### ✅ FAÇA
-
-- ✓ Use Page Object Model para organizar elementos
-- ✓ Crie steps reutilizáveis e independentes
-- ✓ Use nomes descritivos para features e cenários
-- ✓ Isolado os dados de teste (use fixtures/dados)
-- ✓ Capture screenshots em caso de falha
-- ✓ Use waits explícitos em vez de sleep
-- ✓ Organize seus localizadores em constantes
-
-### ❌ EVITE
-
-- ✗ Hard-code de URLs e credenciais
-- ✗ Steps muito longas e complexas
-- ✗ Dependências entre cenários
-- ✗ Usar sleep em lugar de waits
-- ✗ Testes frágeis com seletores instáveis
-- ✗ Muita lógica em steps (deve estar em pages)
-
-## Troubleshooting
-
-### ChromeDriver não encontrado
-
-Baixe o ChromeDriver compatível com sua versão do Chrome:
-https://chromedriver.chromium.org/
-
-### Elemento não encontrado
-
-- Aumente o tempo de espera no `.env`
-- Verifique o seletor CSS/XPath
-- Use waits explícitos na base page
-
-### Teste falha aleatoriamente
-
-- Aumente os timeouts
-- Use waits explícitos em vez de implícitos
-- Verifique se a página está completamente carregada
-
-## Próximos Passos
-
-1. Criar mais page objects conforme necessário
-2. Implementar testes de login
-3. Adicionar reportes com Allure
-4. Configurar CI/CD (GitHub Actions, Jenkins, etc)
-5. Implementar Page Factory Pattern
-
-## Referências
-
-- [Behave Documentation](https://behave.readthedocs.io/)
-- [Selenium Python Documentation](https://selenium.dev/documentation/webdriver/)
-- [Gherkin Syntax](https://cucumber.io/docs/gherkin/)
+## Licença
+MIT.
