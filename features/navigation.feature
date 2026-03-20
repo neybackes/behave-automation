@@ -24,7 +24,7 @@ Funcionalidade: Navegação no Site Buger Eats
 
   @navegacao 
   Cenário: Navegar da página de cadastro para home
-    Dado que estou na página de cadastro "/deliver"
+    Dado que estou na página de cadastro
     Quando clico no link "Voltar para home"
     Então devo ser redirecionado para a página inicial "/"
     E devo ver o título "Seja um parceiro entregador pela Buger Eats"
