@@ -93,7 +93,6 @@ page.navigate_to('https://exemplo.com')
 - (Em breve) Poetry para dependências
 
 ### Pontos pendentes
-- Implementação dos fluxos de formulário
 - Migração para Poetry
 - CI/CD com GitHub Actions
 

@@ -27,8 +27,6 @@ class DriverManager:
 
         if headless:
             options.add_argument("--headless")
-
-        # Opções para suprimir logs e warnings
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
         options.add_argument("--disable-gpu")
