@@ -6,13 +6,13 @@ Funcionalidade: Cadastro de Entregador Buger Eats
   Para que eu possa fazer entregas e ganhar dinheiro
 
   Contexto:
-    Dado que estou na página inicial do Buger Eats
+    Dado que estou na pagina inicial do Buger Eats
     Quando clico em "Cadastre-se para fazer entregas"
-    Então devo ser direcionado para a página de cadastro
+    Então devo ser direcionado para a pagina de cadastro
 
-  @cadastro_sucesso @smoke
+  @cadastro_completo @smoke @moto
   Cenário: Cadastro completo com sucesso - Moto
-    Dado que estou na página de cadastro
+    Dado que estou na pagina de cadastro
     Quando preencho os dados pessoais:
     | campo        | valor     |
     | Nome completo| <random>  |
@@ -28,11 +28,11 @@ Funcionalidade: Cadastro de Entregador Buger Eats
     E faço upload da foto da CNH
     E clico em "Cadastre-se para fazer entregas" no formulário
     Então devo ver a mensagem de sucesso
-    E quando clicar em "OK" na mensagem de sucesso, devo ser redirecionado para a página inicial
+    E quando clicar em "OK" na mensagem de sucesso, devo ser redirecionado para a pagina inicial
 
-@cadastro_sucesso @bicicleta
+@cadastro_completo @smoke @bicicleta
   Cenário: Cadastro completo com sucesso - Bicicleta
-    Dado que estou na página de cadastro
+    Dado que estou na pagina de cadastro
     Quando preencho os dados pessoais:
     | campo        | valor     |
     | Nome completo| <random>  |
@@ -48,11 +48,11 @@ Funcionalidade: Cadastro de Entregador Buger Eats
     E faço upload da foto da CNH
     E clico em "Cadastre-se para fazer entregas" no formulário
     Então devo ver a mensagem de sucesso
-    E quando clicar em "OK" na mensagem de sucesso, devo ser redirecionado para a página inicial
+    E quando clicar em "OK" na mensagem de sucesso, devo ser redirecionado para a pagina inicial
 
-@cadastro_sucesso @van_carro
+@cadastro_completo @smoke @moto
   Cenário: Cadastro completo com sucesso - Van/Carro
-    Dado que estou na página de cadastro
+    Dado que estou na pagina de cadastro
     Quando preencho os dados pessoais:
     | campo        | valor     |
     | Nome completo| <random>  |
@@ -68,5 +68,34 @@ Funcionalidade: Cadastro de Entregador Buger Eats
     E faço upload da foto da CNH
     E clico em "Cadastre-se para fazer entregas" no formulário
     Então devo ver a mensagem de sucesso
-    E quando clicar em "OK" na mensagem de sucesso, devo ser redirecionado para a página inicial
+    E quando clicar em "OK" na mensagem de sucesso, devo ser redirecionado para a pagina inicial
 
+ @validacao_campos @negativo
+  Cenário: Tentativa de cadastro sem preencher campos obrigatórios
+    Dado que estou na pagina de cadastro
+    Quando clico em "Cadastre-se para fazer entregas" no formulário
+    Então devo ver mensagens de erro nos campos obrigatórios
+      | campo             | mensagem                                    |
+      | Nome              | É necessário informar o nome                |
+      | CPF               | É necessário informar o CPF                 |
+      | E-mail            | É necessário informar o email               |
+      | CEP               | É necessário informar o CEP                 |
+      | Número            | É necessário informar o número do endereço  |
+      | Método de entrega | Selecione o método de entrega               |
+      | CNH               | Adicione uma foto da sua CNH                |
+
+@validacao_cpf @negativo 
+Esquema do Cenário: Cadastro com CPF inválido
+  Dado que estou na pagina de cadastro
+  Quando preencho o CPF com "<cpf_invalido>"
+  E clico em "Cadastre-se para fazer entregas" no formulário
+  Então devo ver a mensagem "Oops! CPF inválido"
+
+  Exemplos:
+    | cpf_invalido   |
+    | 123            |
+    | abc123         |
+    | 123.456.789-0  |
+    | 11111111111    |
+    | 1234567890a    |
+    | @@@@           |
