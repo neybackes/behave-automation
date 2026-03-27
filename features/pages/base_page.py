@@ -48,16 +48,33 @@ class BasePage:
         print(f"✓ Elemento presente: {element}")
         return element
     
+    
     def get_text(self, selector: str, locator: str, expected_text: str) -> None:
         element = self.wait_element_visible((selector, locator))
         actual_text = element.text
         assert expected_text in actual_text, f"Texto esperado '{expected_text}' não encontrado. Texto atual: '{actual_text}'"
         print(f"✓ Texto validado: {actual_text}")
 
+    def validate_multiples_text(self, tabela, elementos) -> None:
+        assert tabela is not None, "Tabela de validação não fornecida"   
+        mensagens = [element.text.strip() for element in elementos]
+        print(f"✓ Encontrados {len(elementos)} elementos página.")
+        print(f"Textos: {mensagens}")
+
+        for row in tabela:
+            campo = row['campo']
+            mensagem_esperada = row['mensagem']
+          
+
+            assert mensagem_esperada in mensagens, (
+                f'Texto esperado para "{campo}" não encontrada.\n'
+                f"Esperado: {mensagem_esperada}\n"
+                f"Encontrado: {mensagens}"
+            )
+
 
     def find_element(self, selector: str, locator: str) -> WebElement:
         element = self.wait_element_visible((selector, locator))
-        element.is_displayed()
         print(f"✓ Elemento encontrado: {locator}")
         return element
 
