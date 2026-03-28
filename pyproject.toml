@@ -19,18 +19,20 @@ dependencies = [
 [dependency-groups]
 dev = [
     "ruff (>=0.14.10,<0.15.0)",
-    "pytest-cov (>=7.0.0,<8.0.0)",
-    "taskipy (>=1.14.1,<2.0.0)"
-]
+    "taskipy (>=1.14.1,<2.0.0)",
+    "allure-behave (>=2.0.0,<3.0.0)"
+
+]   
 
 
 [tool.taskipy.tasks]
 run = 'behave'
 lint = 'ruff check .'
 format = 'ruff format .'
+allure = 'behavex --formatter=behavex.outputs.formatters.allure_behavex_formatter:AllureBehaveXFormatter'
+parallel = 'behavex --parallel-processes=3 --show-progress-bar'
 pre_test = 'task lint'
-test = 'behavex'
-post_test = 'allure generate output/ -o output/allure-report --clean'
+test = 'behavex --parallel-processes=3 --show-progress-bar'
 
 [tool.poetry]
 package-mode = false
