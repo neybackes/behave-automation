@@ -29,7 +29,7 @@ run = 'behave'
 lint = 'ruff check .'
 format = 'ruff format .'
 pre_test = 'task lint'
-test = 'behave'
+test = 'behavex'
 post_test = 'allure generate output/ -o output/allure-report --clean'
 
 [tool.poetry]
