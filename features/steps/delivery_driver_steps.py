@@ -1,7 +1,7 @@
-import os
+from pathlib import Path
 
-import behave  # type: ignore
-import behave.runner  # type: ignore
+import behave
+import behave.runner
 from selenium.webdriver.common.by import By
 
 
@@ -58,15 +58,13 @@ def step_seleciono_metodo_entrega_van_carro(
 @behave.when('faço upload da foto da CNH')
 def step_faco_upload_cnh(context: behave.runner.Context) -> None:
     # Caminho relativo ao diretório raiz do projeto
-    project_root = os.path.abspath(
-        os.path.join(os.path.dirname(__file__), '..', '..')
-    )
-    cnh_path = os.path.join(project_root, 'support', 'assets', 'cnh_model.png')
-    assert os.path.exists(cnh_path), f'Arquivo não encontrado: {cnh_path}'
+    project_root = Path(__file__).resolve().parents[2]
+    cnh_path = project_root / 'resources' / 'assets' / 'cnh_model.png'
+    assert cnh_path.exists(), f'Arquivo não encontrado: {cnh_path}'
     input_file = context.page.wait_element_present(
         (By.XPATH, "//input[@type='file']"), timeout=10
     )
-    input_file.send_keys(cnh_path)
+    input_file.send_keys(str(cnh_path))
 
 
 @behave.when('clico em "Cadastre-se para fazer entregas" no formulário')

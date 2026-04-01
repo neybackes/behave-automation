@@ -1,14 +1,25 @@
-import behave  # type: ignore
-import behave.runner  # type: ignore
-import pages.base_page  # type: ignore
+import sys
+from pathlib import Path
+
+import behave
+import behave.runner
 from selenium.webdriver.common.by import By
 
+from automation.pages.base_page import BasePage
 
-@behave.given('que estou na pagina inicial do Buger Eats')  # contexto
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+SRC_PATH = PROJECT_ROOT / 'src'
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+
+
+@behave.given(
+    'que estou na pagina inicial do Buger Eats'
+)  # contexto  # noqa: E303
 @behave.when('acesso a pagina inicial')
 @behave.given('que estou na pagina inicial')
 def step_acessar_pagina_inicial(context: behave.runner.Context) -> None:
-    context.page = pages.base_page.BasePage(context.driver)
+    context.page = BasePage(context.driver)
     context.page.open(context.base_url)
 
 
@@ -74,7 +85,7 @@ def step_ver_formulario(context: behave.runner.Context) -> None:
 @behave.given('que estou na pagina de cadastro')
 @behave.when('acesso a pagina de cadastro diretamente')
 def step_estou_na_pagina_cadastro(context: behave.runner.Context) -> None:
-    context.page = pages.base_page.BasePage(context.driver)
+    context.page = BasePage(context.driver)
     context.page.open(context.base_url + '/deliver')
 
 
