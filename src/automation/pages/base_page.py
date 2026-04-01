@@ -1,25 +1,27 @@
-import time
+from abc import ABC, abstractmethod
 from typing import Any
 
-from faker import Faker
-from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from automation.services.cep_service import CepService
-
-fake = Faker('pt_BR')
 Locator = tuple[Any, str]
 
 
-class BasePage:
+class BasePage(ABC):
     def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
 
-    def open(self, url: str) -> None:
+    @property
+    @abstractmethod
+    def path(self) -> str:
+        raise NotImplementedError
+
+    def open(self, base_url: str) -> None:
+        base_url = base_url.rstrip('/')
+        url = f'{base_url}{self.path}'
         self.driver.get(url)
         print(f'OK: acessando a pagina: {url}')
 
@@ -134,54 +136,6 @@ class BasePage:
         )
         print('OK: todos os recursos carregados corretamente')
 
-    def validate_address(self, cep: str) -> None:
-        time.sleep(3)
-        street = self.find_element(By.NAME, 'address').get_attribute('value')
-        district = self.find_element(By.NAME, 'district').get_attribute(
-            'value'
-        )
-        city_uf = self.find_element(By.NAME, 'city-uf').get_attribute('value')
-
-        address = CepService.get_valid_cep(cep)
-        print(
-            f'Endereco no formulario: {street}, {district}, {city_uf} '
-            f'com CEP: {cep}'
-        )
-
-        assert street == address['logradouro']
-        assert district == address['bairro']
-        assert city_uf == f'{address["localidade"]}/{address["uf"]}'
-        print('OK: endereco validado com sucesso')
-
-    def fill_basic_data_input(self, table) -> str:
-        if table is None:
-            raise ValueError('A tabela de dados pessoais esta ausente.')
-
-        data = {row['campo']: row['valor'] for row in table}
-        fields = {
-            'Nome completo': (By.NAME, 'name'),
-            'CPF': (By.NAME, 'cpf'),
-            'E-mail': (By.NAME, 'email'),
-            'Whatsapp': (By.NAME, 'whatsapp'),
-            'CEP': (By.NAME, 'postalcode'),
-        }
-
-        cep = '04823-050'
-        for field, value in data.items():
-            send_value = value
-            if value == '<random>':
-                if field == 'Nome completo':
-                    send_value = fake.name()
-                elif field == 'CPF':
-                    send_value = fake.cpf().replace('.', '').replace('-', '')
-                elif field == 'E-mail':
-                    send_value = fake.email()
-                elif field == 'Whatsapp':
-                    send_value = fake.msisdn()
-                elif field == 'CEP':
-                    send_value = cep
-
-            if field in fields:
-                self.find_element(*fields[field]).send_keys(send_value)
-
-        return cep
+    def assert_on_page(self) -> None:
+        assert self.path in self.driver.current_url
+        print(f'OK: na pagina esperada: {self.driver.current_url}')

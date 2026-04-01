@@ -3,7 +3,6 @@ from selenium.webdriver.chrome.options import Options
 
 
 class DriverManager:
-
     @staticmethod
     def create_chrome_driver(
         headless: bool = False, implicit_wait: int = 10

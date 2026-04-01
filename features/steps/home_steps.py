@@ -1,25 +1,15 @@
-import sys
-from pathlib import Path
-
 import behave
 import behave.runner
-from selenium.webdriver.common.by import By
 
-from automation.pages.base_page import BasePage
-
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-SRC_PATH = PROJECT_ROOT / 'src'
-if str(SRC_PATH) not in sys.path:
-    sys.path.insert(0, str(SRC_PATH))
+from automation.pages.delivery_page import DeliveryPage
+from automation.pages.home_page import HomePage
 
 
-@behave.given(
-    'que estou na pagina inicial do Buger Eats'
-)  # contexto  # noqa: E303
+@behave.given('que estou na pagina inicial do Buger Eats')
 @behave.when('acesso a pagina inicial')
 @behave.given('que estou na pagina inicial')
 def step_acessar_pagina_inicial(context: behave.runner.Context) -> None:
-    context.page = BasePage(context.driver)
+    context.page = HomePage(context.driver)
     context.page.open(context.base_url)
 
 
@@ -32,13 +22,13 @@ def step_ver_pagina_inicial(context: behave.runner.Context) -> None:
 @behave.then('devo ver o logo "Buger Eats"')
 def step_ver_logo(context: behave.runner.Context) -> None:
     expected_title = 'Buger Eats'
-    context.page.get_title(expected_title)
+    context.page.assert_logo(expected_title)
 
 
 @behave.then('devo ver o título "Seja um parceiro entregador pela Buger Eats"')
 def step_ver_titulo(context: behave.runner.Context) -> None:
     expected_text = 'Seja um parceiro entregador pela Buger Eats'
-    context.page.get_text('tag name', 'h1', expected_text)
+    context.page.assert_title(expected_text)
 
 
 @behave.then(
@@ -52,49 +42,46 @@ def step_ver_texto(context: behave.runner.Context) -> None:
         'Em vez de oportunidades tradicionais de entrega de refeições em '
         'horários pouco flexíveis, seja seu próprio chefe.'
     )
-    context.page.get_text('tag name', 'p', expected_text)
+    context.page.assert_text(expected_text)
 
 
 @behave.then('devo ver o botão "Cadastre-se para fazer entregas"')
 def step_ver_botao(context: behave.runner.Context) -> None:
     expected_text = 'Cadastre-se para fazer entregas'
-    context.page.get_text('tag name', 'strong', expected_text)
+    context.page.assert_button(expected_text)
 
 
 @behave.when('clico em "Cadastre-se para fazer entregas"')  # contexto
 @behave.when('clico no botão "Cadastre-se para fazer entregas"')
 def step_clicar_botao(context: behave.runner.Context) -> None:
     expected_text = 'Cadastre-se para fazer entregas'
-    context.page.get_text('tag name', 'strong', expected_text)
-    locator_tuple = (By.XPATH, f"//a[.//strong[text()='{expected_text}']]")
-    context.page.click(locator_tuple)
+    context.page.click_cadastrar(expected_text)
+    context.page = DeliveryPage(context.driver)
 
 
 @behave.then('devo ser direcionado para a pagina de cadastro')  # contexto
 @behave.then('devo ser redirecionado para "/deliver"')
 def step_redirecionado_deliver(context: behave.runner.Context) -> None:
-    assert '/deliver' in context.driver.current_url
-    print(f'✓ Redirecionado para: {context.driver.current_url}')
+    context.page.assert_on_page()
 
 
 @behave.then('devo ver o formulário de cadastro')
 def step_ver_formulario(context: behave.runner.Context) -> None:
-    context.page.find_element('xpath', '//*[@id="page-deliver"]/form')
+    context.page.assert_form_visible()
 
 
 @behave.given('que estou na pagina de cadastro')
 @behave.when('acesso a pagina de cadastro diretamente')
 def step_estou_na_pagina_cadastro(context: behave.runner.Context) -> None:
-    context.page = BasePage(context.driver)
-    context.page.open(context.base_url + '/deliver')
+    context.page = DeliveryPage(context.driver)
+    context.page.open(context.base_url)
 
 
 @behave.when('clico no link "Voltar para home"')
 def step_clicar_voltar_home(context: behave.runner.Context) -> None:
     expected_text = 'Voltar para home'
-    context.page.get_text('tag name', 'a', expected_text)
-    locator_tuple = (By.XPATH, f"//a[contains(text(), '{expected_text}')]")
-    context.page.click(locator_tuple)
+    context.page.voltar_home(expected_text)
+    context.page = HomePage(context.driver)
 
 
 @behave.then('a pagina deve carregar em menos de 3 segundos')

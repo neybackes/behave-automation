@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 
 
 class EnvConfig:
-
     def __init__(self) -> None:
         load_dotenv()
 
