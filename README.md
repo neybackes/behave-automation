@@ -1,36 +1,41 @@
-# behave_automation
+﻿# behave_automation
 
-Suite de automacao E2E com Behave + Selenium, organizada em arquitetura por camadas (`config`, `core`, `pages`, `services`).
+Simple E2E automation suite using Behave + Selenium, organized in layers
+(`config`, `core`, `pages`, `services`).
 
-## Requisitos
+## Requirements
 - Python 3.10+
 - Poetry
-- Google Chrome instalado
+- Google Chrome installed
 
 ## Setup
 ```bash
-git clone <url-do-repo>
+git clone <repo-url>
 cd behave_automation
 python -m venv .venv
-source .venv/Scripts/activate  # Windows
+. .venv/Scripts/activate  # Windows
 poetry install
 ```
 
-Configure o `.env` na raiz (base em `.env.example`):
+## Configuration
+Create a `.env` file at the project root (use `.env.example` as a base):
 ```env
 BASE_URL=https://buger-eats.vercel.app/
 HEADLESS=false
 TIMEOUT=10
 ```
 
-## Execucao
+## Run
 ```bash
 poetry run behavex
 ```
 
-Relatorios gerados em `output/report.html` e `output/report.json`.
+Reports are generated in `output/report.html` and `output/report.json`.
 
-## Estrutura
+## Documentation
+- Project Docs (PT-BR): https://www.notion.so/30e9a13279ae80018031f525970e6909
+
+## Project Structure
 ```text
 behave_automation/
 ├── src/
@@ -38,7 +43,8 @@ behave_automation/
 │       ├── config/
 │       ├── core/
 │       ├── pages/
-│       └── services/
+│       ├── services/
+│       └── utils/
 │
 ├── resources/
 │   ├── assets/
@@ -56,7 +62,7 @@ behave_automation/
 └── README.md
 ```
 
-## Exemplo rapido
+## Quick Example
 ```python
 from automation.core.driver_manager import DriverManager
 from automation.pages.base_page import BasePage
