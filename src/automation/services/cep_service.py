@@ -12,5 +12,5 @@ class CepService:
         response.raise_for_status()
         data = response.json()
         if 'erro' in data:
-            raise ValueError(f'CEP invalido ou nao encontrado: {cep}')
+            raise ValueError(f'Invalid or not found CEP: {cep}')
         return data

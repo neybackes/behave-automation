@@ -68,14 +68,14 @@ class DeliveryPage(BasePage):
 
         WebDriverWait(self.driver, 10).until(fields_filled)
         logger.debug(
-            f'Endereco no formulario: {expected_street}, '
-            f'{expected_district}, {expected_city_uf} com CEP: {cep}'
+            f'Address in form: {expected_street}, '
+            f'{expected_district}, {expected_city_uf} with CEP: {cep}'
         )
-        logger.info('OK: endereco validado com sucesso')
+        logger.info('OK: address validated successfully')
 
     def fill_basic_data_input(self, table) -> str:
         if table is None:
-            raise ValueError('A tabela de dados pessoais esta ausente.')
+            raise ValueError('Personal data table is missing.')
 
         data = {row['campo']: row['valor'] for row in table}
         fields = {
@@ -119,7 +119,7 @@ class DeliveryPage(BasePage):
     def upload_cnh(self) -> None:
         project_root = Path(__file__).resolve().parents[3]
         cnh_path = project_root / 'resources' / 'assets' / 'cnh_model.png'
-        assert cnh_path.exists(), f'Arquivo nao encontrado: {cnh_path}'
+        assert cnh_path.exists(), f'File not found: {cnh_path}'
         input_file = self.wait_element_present(self.INPUT_FILE, timeout=10)
         input_file.send_keys(str(cnh_path))
 
