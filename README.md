@@ -1,103 +1,96 @@
-
 # behave_automation
 
-Bem-vindo(a) ao **projeto behave_automation**! Este projeto implementa uma suíte de E2E em linguagem natural, utilizando Behave e Selenium, com arquitetura desacoplada baseada no padrão Page Object.
+Simple E2E automation suite using Behave + Selenium, organized in layers
+(`config`, `core`, `pages`, `services`).
 
-## Sobre o projeto
-Este repositório foi pensado para aproximar os requisitos de negócio da implementação técnica, utilizando o Behave como facilitador. Os cenários de teste são escritos em linguagem natural (Gherkin), permitindo que a lógica seja baseada no comportamento real e tornando os testes compreensíveis para pessoas não técnicas, como analistas de negócios, POs (Product Owners) e stakeholders.
+## Requirements
+- Python 3.10+
+- Poetry
+- Google Chrome installed
 
-### Behavex
-O projeto utiliza o Behavex, uma extensão do Behave que traz recursos avançados para relatórios, organização e customização dos testes orientados ao comportamento. Com o Behavex, é possível gerar relatórios HTML detalhados, capturar imagens e desacoplar ainda mais as responsabilidades, além de facilitar a integração de novas funcionalidades e a manutenção do projeto.
-
-Principais benefícios do Behavex:
-- Relatórios customizados e interativos
-- Extensões para hooks, tags e filtros
-- Melhor desacoplamento entre steps, pages e suporte
-- Facilidade para integração com pipelines e CI/CD
-
-
-## Requisitos
-- Python 3.8+ (recomenda-se versão mais recente)
-- Behave
-- Selenium
-- Acesso o página: `https://buger-eats.vercel.app/`
-- (Em breve) Poetry para gerenciamento de dependências
-
-## Como começar
-Clone o repositório:
+## Setup
 ```bash
-git clone <url-do-repo>
+git clone <repo-url>
 cd behave_automation
-```
-Crie e ative o ambiente virtual:
-```bash
 python -m venv .venv
-source .venv/Scripts/activate  # Windows
+. .venv/Scripts/activate  # Windows
+poetry install
 ```
-Instale as dependências:
+
+## Configuration
+Create a `.env` file at the project root (use `.env.example` as a base):
+```env
+BASE_URL=https://buger-eats.vercel.app/
+HEADLESS=false
+TIMEOUT=10
+```
+
+## Run
 ```bash
-pip install -r requirements.txt
+poetry run behavex
 ```
-**Configure as variáveis de ambiente:**
-	Crie um arquivo `.env` na raiz (um exemplo já está presente):
-	```env
-	BASE_URL=https://buger-eats.vercel.app/
-	```
 
-(Em breve: migração para Poetry)
+Reports are generated in `output/report.html` and `output/report.json`.
 
-## Rodando os testes
-Execute os testes BDD:
+## Tags
+Common tags used in this project:
+- `@smoke`, `@regression`, `@performance`
+- `@navigation`, `@registration`
+- `@delivery_moto`, `@delivery_bike`, `@delivery_van`
+- `@negative`, `@validation_required`, `@validation_cpf`
+
+Run only a subset of scenarios:
 ```bash
-behavex
+# Smoke tests
+poetry run behavex --tags=@smoke
+
+# Performance checks
+poetry run behavex --tags=@performance
+
+# Only navigation scenarios
+poetry run behavex --tags=@navigation
+
+# Only registration negative validations
+poetry run behavex --tags=@negative
 ```
-Os relatórios são gerados em output/report.html e output/report.json.
 
-## Estrutura do projeto
-features/           # Cenários BDD e steps
-	nav.feature       # Exemplo de feature
-	environment.py    # Configuração Behave
-	pages/            # Page Objects
-		base_page.py    # Base para páginas
-	steps/            # Steps definitions
-		base_steps.py   # Base para steps
-support/            # Suporte e drivers
-	drivers/          # Gerenciamento de drivers Selenium
-		driver_manager.py
-	utils/            # Utilitários e configs
-		env_config.py
-output/             # Relatórios e logs
-requirements.txt    # Dependências atuais
-behave.ini          # Configuração Behave
-README.md           # Este guia
+## Documentation
+- Project Docs (PT-BR): https://www.notion.so/30e9a13279ae80018031f525970e6909
 
-## Exemplo prático
+## Project Structure
+```text
+behave_automation/
+├── src/
+│   └── automation/
+│       ├── config/
+│       ├── core/
+│       ├── pages/
+│       ├── services/
+│       └── utils/
+│
+├── resources/
+│   ├── assets/
+│   └── data/
+│
+├── features/
+│   ├── environment.py
+│   ├── navigation.feature
+│   ├── delivery_driver_reg.feature
+│   └── steps/
+│
+├── output/
+├── pyproject.toml
+├── behave.ini
+└── README.md
+```
+
+## Quick Example
 ```python
-from features.pages.base_page import BasePage
-from support.drivers.driver_manager import DriverManager
+from automation.core.driver_manager import DriverManager
+from automation.pages.base_page import BasePage
 
-driver = DriverManager().get_driver()
+driver = DriverManager.create_chrome_driver()
 page = BasePage(driver)
-page.navigate_to('https://exemplo.com')
+page.open('https://buger-eats.vercel.app/')
+DriverManager.close_driver(driver)
 ```
-
-## Integração Contínua
-(Ainda a ser implementado) Workflow automatizado com GitHub Actions para rodar testes e checar estilo a cada push/pull request.
-
-## Convenções e estilo
-- Estrutura desacoplada e reutilizável
-- Page Object para organização
-- Steps claros e objetivos
-- Tageamento @smoke, @perfomance...
-- Relatórios HTML e JSON
-- (Em breve) Poetry para dependências
-
-### Pontos pendentes
-- Migração para Poetry
-- CI/CD com GitHub Actions
-
-## Bora contribuir?
-Pull requests são super bem-vindos! Ideias, sugestões ou dúvidas, abra uma issue.
-
-## Licença
-MIT.
