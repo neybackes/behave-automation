@@ -6,10 +6,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from automation.pages.base_page import BasePage
 from automation.services.cep_service import CepService
-from automation.utils.logger import setup_logger
+from automation.utils.logger import get_logger
 
 fake = Faker('pt_BR')
-logger = setup_logger()
+logger = get_logger()
 
 
 class DeliveryPage(BasePage):

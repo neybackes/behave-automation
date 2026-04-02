@@ -9,13 +9,17 @@ SRC_PATH = PROJECT_ROOT / 'src'
 if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
-from automation.config.env_config import EnvConfig 
+from automation.config.env_config import EnvConfig  # noqa: E402
+from automation.core.driver_manager import DriverManager  # noqa: E402
+from automation.utils.logger import setup_logger  # noqa: E402
 
-from automation.core.driver_manager import DriverManager
-
-from automation.utils.logger import setup_logger
-
-logger = setup_logger()
+env = EnvConfig()
+logger = setup_logger(
+    name='QA',
+    level=env.get_log_level(),
+    silence_external=env.silence_external_logs(),
+    show_ok_logs=env.show_ok_logs(),
+)
 
 
 def before_all(context: behave.runner.Context) -> None:
@@ -27,7 +31,6 @@ def before_scenario(
 ) -> None:
     logger.debug(f'Executando: {scenario.name}')
 
-    env = EnvConfig()
     context.base_url = env.get_base_url()
     context.driver = DriverManager.create_chrome_driver(
         headless=env.is_headless(),

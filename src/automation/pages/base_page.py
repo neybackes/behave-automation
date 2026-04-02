@@ -6,10 +6,10 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-from automation.utils.logger import setup_logger
+from automation.utils.logger import get_logger
 
 Locator = tuple[Any, str]
-logger = setup_logger()
+logger = get_logger()
 
 
 class BasePage(ABC):
