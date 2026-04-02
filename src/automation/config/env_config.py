@@ -7,7 +7,6 @@ load_dotenv()
 
 
 class EnvConfig:
-
     @staticmethod
     def is_headless() -> bool:
         return os.getenv('HEADLESS', 'false').lower() == 'true'
