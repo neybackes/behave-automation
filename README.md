@@ -1,4 +1,4 @@
-﻿# behave_automation
+# behave_automation
 
 Simple E2E automation suite using Behave + Selenium, organized in layers
 (`config`, `core`, `pages`, `services`).
