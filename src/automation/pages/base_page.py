@@ -6,7 +6,10 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from automation.utils.logger import setup_logger
+
 Locator = tuple[Any, str]
+logger = setup_logger()
 
 
 class BasePage(ABC):
@@ -23,7 +26,7 @@ class BasePage(ABC):
         base_url = base_url.rstrip('/')
         url = f'{base_url}{self.path}'
         self.driver.get(url)
-        print(f'OK: acessando a pagina: {url}')
+        logger.info(f'OK: acessando a pagina: {url}')
 
     def wait_page_load(self, timeout: int = 10) -> None:
         WebDriverWait(self.driver, timeout).until(
@@ -32,7 +35,7 @@ class BasePage(ABC):
                 == 'complete'
             )
         )
-        print('OK: pagina carregada')
+        logger.info('OK: pagina carregada')
 
     def get_title(self, expected_title: str) -> None:
         actual_title = self.driver.title
@@ -41,30 +44,30 @@ class BasePage(ABC):
                 f"Titulo esperado '{expected_title}' nao corresponde ao "
                 f"titulo atual '{actual_title}'"
             )
-        print(f'OK: titulo validado: {actual_title}')
+        logger.info(f'OK: titulo validado: {actual_title}')
 
     def wait_element_visible(
         self, locator_tuple: Locator, timeout: int = 10
     ) -> WebElement:
         wait = WebDriverWait(self.driver, timeout)
-        print(
+        logger.debug(
             f'OK: aguardando elemento visivel: {locator_tuple} '
             f'(timeout: {timeout}s)'
         )
         locator = wait.until(ec.visibility_of_element_located(locator_tuple))
-        print(f'OK: elemento visivel: {locator}')
+        logger.info(f'OK: elemento visivel: {locator}')
         return locator
 
     def wait_element_present(
         self, locator_tuple: Locator, timeout: int = 10
     ) -> WebElement:
         wait = WebDriverWait(self.driver, timeout)
-        print(
+        logger.debug(
             f'OK: aguardando elemento presente: {locator_tuple} '
             f'(timeout: {timeout}s)'
         )
         element = wait.until(ec.presence_of_element_located(locator_tuple))
-        print(f'OK: elemento presente: {element}')
+        logger.info(f'OK: elemento presente: {element}')
         return element
 
     def get_text(
@@ -76,33 +79,33 @@ class BasePage(ABC):
             f"Texto esperado '{expected_text}' nao encontrado. "
             f"Texto atual: '{actual_text}'"
         )
-        print(f'OK: texto validado: {actual_text}')
+        logger.info(f'OK: texto validado: {actual_text}')
 
     @staticmethod
     def validate_multiples_text(table, elements) -> None:
         assert table is not None, 'Tabela de validacao nao fornecida'
         messages = [element.text.strip() for element in elements]
-        print(f'OK: encontrados {len(elements)} elementos na pagina.')
-        print(f'Textos encontrados: {messages}')
+        logger.info(f'OK: encontrados {len(elements)} elementos na pagina.')
+        logger.debug(f'Textos encontrados: {messages}')
 
         for row in table:
             field = row['campo']
             expected_message = row['mensagem']
             assert expected_message in messages, (
-                f'Texto esperado para "{field}" nao encontrado.\n'
-                f'Esperado: {expected_message}\n'
+                f'Texto esperado para "{field}" nao encontrado. '
+                f'Esperado: {expected_message}. '
                 f'Encontrado: {messages}'
             )
 
     def find_element(self, selector: Any, locator: str) -> WebElement:
         element = self.wait_element_visible((selector, locator))
-        print(f'OK: elemento encontrado: {locator}')
+        logger.info(f'OK: elemento encontrado: {locator}')
         return element
 
     def click(self, locator_tuple: Locator) -> None:
         element = self.wait_element_visible(locator_tuple)
         element.click()
-        print(f'OK: elemento clicado: {locator_tuple}')
+        logger.info(f'OK: elemento clicado: {locator_tuple}')
 
     def check_load_time(self, max_time: int = 3) -> None:
         start_time = self.driver.execute_script(
@@ -118,7 +121,7 @@ class BasePage(ABC):
             f'Tempo de carregamento {load_time:.2f}s excede o limite de '
             f'{max_time}s'
         )
-        print(f'OK: tempo de carregamento: {load_time:.2f}s')
+        logger.info(f'OK: tempo de carregamento: {load_time:.2f}s')
 
     def check_resources_loaded(self) -> None:
         resources = self.driver.execute_script(
@@ -133,8 +136,8 @@ class BasePage(ABC):
         assert not failed_resources, (
             f'Recursos com falha de carregamento: {failed_resources}'
         )
-        print('OK: todos os recursos carregados corretamente')
+        logger.info('OK: todos os recursos carregados corretamente')
 
     def assert_on_page(self) -> None:
         assert self.path in self.driver.current_url
-        print(f'OK: na pagina esperada: {self.driver.current_url}')
+        logger.info(f'OK: na pagina esperada: {self.driver.current_url}')

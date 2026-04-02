@@ -1,4 +1,4 @@
-﻿import behave
+import behave
 import behave.runner
 
 from automation.pages.delivery_page import DeliveryPage

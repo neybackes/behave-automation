@@ -6,8 +6,10 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from automation.pages.base_page import BasePage
 from automation.services.cep_service import CepService
+from automation.utils.logger import setup_logger
 
 fake = Faker('pt_BR')
+logger = setup_logger()
 
 
 class DeliveryPage(BasePage):
@@ -65,11 +67,11 @@ class DeliveryPage(BasePage):
             )
 
         WebDriverWait(self.driver, 10).until(fields_filled)
-        print(
+        logger.debug(
             f'Endereco no formulario: {expected_street}, '
             f'{expected_district}, {expected_city_uf} com CEP: {cep}'
         )
-        print('OK: endereco validado com sucesso')
+        logger.info('OK: endereco validado com sucesso')
 
     def fill_basic_data_input(self, table) -> str:
         if table is None:

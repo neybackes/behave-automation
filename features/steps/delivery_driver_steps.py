@@ -1,4 +1,4 @@
-﻿import behave
+import behave
 import behave.runner
 
 from automation.pages.home_page import HomePage

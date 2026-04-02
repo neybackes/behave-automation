@@ -14,7 +14,8 @@ dependencies = [
     "selenium>=4.15.2,<5.0.0",
     "python-dotenv>=1.0.0,<2.0.0",
     "requests>=2.31.0,<3.0.0",
-    "faker>=24.8.0,<25.0.0"
+    "faker>=24.8.0,<25.0.0",
+    "colorama>=0.4.6,<1.0.0"
 ]
 
 [dependency-groups]

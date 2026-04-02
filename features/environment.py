@@ -9,18 +9,23 @@ SRC_PATH = PROJECT_ROOT / 'src'
 if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
-from automation.config.env_config import EnvConfig  # noqa: E402
-from automation.core.driver_manager import DriverManager  # noqa: E402
+from automation.config.env_config import EnvConfig 
+
+from automation.core.driver_manager import DriverManager
+
+from automation.utils.logger import setup_logger
+
+logger = setup_logger()
 
 
 def before_all(context: behave.runner.Context) -> None:
-    print('\n=== Iniciando testes de automacao ===\n')
+    logger.debug('=== Iniciando testes de automacao ===')
 
 
 def before_scenario(
     context: behave.runner.Context, scenario: behave.model.Scenario
 ) -> None:
-    print(f'\nExecutando: {scenario.name}')
+    logger.debug(f'Executando: {scenario.name}')
 
     env = EnvConfig()
     context.base_url = env.get_base_url()
@@ -34,13 +39,13 @@ def after_scenario(
     context: behave.runner.Context, scenario: behave.model.Scenario
 ) -> None:
     if scenario.status == 'failed':
-        print(f'\nScenario FALHOU: {scenario.name}')
+        logger.error(f'Scenario FALHOU: {scenario.name}')
     else:
-        print(f'\nScenario PASSOU: {scenario.name}')
+        logger.info(f'Scenario PASSOU: {scenario.name}')
 
     if hasattr(context, 'driver'):
         DriverManager.close_driver(context.driver)
 
 
 def after_all(context: behave.runner.Context) -> None:
-    print('\n=== Testes finalizados ===\n')
+    logger.debug('=== Testes finalizados ===')
