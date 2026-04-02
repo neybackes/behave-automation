@@ -34,7 +34,7 @@ format = 'ruff format .'
 allure = 'behavex --formatter=behavex.outputs.formatters.allure_behavex_formatter:AllureBehaveXFormatter'
 parallel = 'behavex --parallel-processes=3 --show-progress-bar'
 pre_test = 'task lint'
-test = 'behavex --parallel-processes=3 --show-progress-bar'
+test = 'behavex'
 
 [tool.poetry]
 package-mode = false
