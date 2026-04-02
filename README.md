@@ -32,6 +32,28 @@ poetry run behavex
 
 Reports are generated in `output/report.html` and `output/report.json`.
 
+## Tags
+Common tags used in this project:
+- `@smoke`, `@regression`, `@performance`
+- `@navigation`, `@registration`
+- `@delivery_moto`, `@delivery_bike`, `@delivery_van`
+- `@negative`, `@validation_required`, `@validation_cpf`
+
+Run only a subset of scenarios:
+```bash
+# Smoke tests
+poetry run behavex --tags=@smoke
+
+# Performance checks
+poetry run behavex --tags=@performance
+
+# Only navigation scenarios
+poetry run behavex --tags=@navigation
+
+# Only registration negative validations
+poetry run behavex --tags=@negative
+```
+
 ## Documentation
 - Project Docs (PT-BR): https://www.notion.so/30e9a13279ae80018031f525970e6909
 

@@ -1,16 +1,16 @@
 import sys
 from pathlib import Path
 
+import behave.model
+import behave.runner
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SRC_PATH = PROJECT_ROOT / 'src'
 if str(SRC_PATH) not in sys.path:
     sys.path.insert(0, str(SRC_PATH))
 
-import behave.model
-import behave.runner
-
-from automation.config.env_config import EnvConfig
-from automation.core.driver_manager import DriverManager
+from automation.config.env_config import EnvConfig  # noqa: E402
+from automation.core.driver_manager import DriverManager  # noqa: E402
 
 
 def before_all(context: behave.runner.Context) -> None:

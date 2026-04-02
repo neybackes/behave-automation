@@ -1,7 +1,8 @@
-import behave
+﻿import behave
 import behave.runner
 
 from automation.pages.home_page import HomePage
+
 
 @behave.when('preencho os dados pessoais:')
 def step_preencho_dados_pessoais(context: behave.runner.Context) -> None:

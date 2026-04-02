@@ -1,8 +1,8 @@
-import time
 from pathlib import Path
 
 from faker import Faker
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 
 from automation.pages.base_page import BasePage
 from automation.services.cep_service import CepService
@@ -43,22 +43,32 @@ class DeliveryPage(BasePage):
         self.click(self.BUSCAR_CEP)
 
     def validate_address(self, cep: str) -> None:
-        time.sleep(3)
-        street = self.find_element(*self.INPUT_ADDRESS).get_attribute('value')
-        district = self.find_element(*self.INPUT_DISTRICT).get_attribute(
-            'value'
-        )
-        city_uf = self.find_element(*self.INPUT_CITY_UF).get_attribute('value')
-
         address = CepService.get_valid_cep(cep)
-        print(
-            f'Endereco no formulario: {street}, {district}, {city_uf} '
-            f'com CEP: {cep}'
-        )
+        expected_street = address['logradouro']
+        expected_district = address['bairro']
+        expected_city_uf = f'{address["localidade"]}/{address["uf"]}'
 
-        assert street == address['logradouro']
-        assert district == address['bairro']
-        assert city_uf == f'{address["localidade"]}/{address["uf"]}'
+        def fields_filled(driver) -> bool:
+            street = driver.find_element(*self.INPUT_ADDRESS).get_attribute(
+                'value'
+            )
+            district = driver.find_element(*self.INPUT_DISTRICT).get_attribute(
+                'value'
+            )
+            city_uf = driver.find_element(*self.INPUT_CITY_UF).get_attribute(
+                'value'
+            )
+            return (
+                street == expected_street
+                and district == expected_district
+                and city_uf == expected_city_uf
+            )
+
+        WebDriverWait(self.driver, 10).until(fields_filled)
+        print(
+            f'Endereco no formulario: {expected_street}, '
+            f'{expected_district}, {expected_city_uf} com CEP: {cep}'
+        )
         print('OK: endereco validado com sucesso')
 
     def fill_basic_data_input(self, table) -> str:

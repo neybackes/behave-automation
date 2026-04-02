@@ -1,5 +1,6 @@
 # language: pt
 # encoding: utf-8
+@registration
 Funcionalidade: Cadastro de Entregador Buger Eats
   Como um candidato a entregador
   Eu quero me cadastrar na plataforma Buger Eats
@@ -10,7 +11,7 @@ Funcionalidade: Cadastro de Entregador Buger Eats
     Quando clico em "Cadastre-se para fazer entregas"
     Então devo ser direcionado para a pagina de cadastro
 
-  @cadastro_completo @smoke @moto
+  @regression @delivery_moto
   Cenário: Cadastro completo com sucesso - Moto
     Dado que estou na pagina de cadastro
     Quando preencho os dados pessoais:
@@ -30,7 +31,7 @@ Funcionalidade: Cadastro de Entregador Buger Eats
     Então devo ver a mensagem de sucesso
     E quando clicar em "OK" na mensagem de sucesso, devo ser redirecionado para a pagina inicial
 
-@cadastro_completo @smoke @bicicleta
+  @regression @delivery_bike
   Cenário: Cadastro completo com sucesso - Bicicleta
     Dado que estou na pagina de cadastro
     Quando preencho os dados pessoais:
@@ -50,7 +51,7 @@ Funcionalidade: Cadastro de Entregador Buger Eats
     Então devo ver a mensagem de sucesso
     E quando clicar em "OK" na mensagem de sucesso, devo ser redirecionado para a pagina inicial
 
-@cadastro_completo @smoke @moto
+  @regression @delivery_van
   Cenário: Cadastro completo com sucesso - Van/Carro
     Dado que estou na pagina de cadastro
     Quando preencho os dados pessoais:
@@ -70,7 +71,7 @@ Funcionalidade: Cadastro de Entregador Buger Eats
     Então devo ver a mensagem de sucesso
     E quando clicar em "OK" na mensagem de sucesso, devo ser redirecionado para a pagina inicial
 
- @validacao_campos @negativo
+  @negative @validation_required
   Cenário: Tentativa de cadastro sem preencher campos obrigatórios
     Dado que estou na pagina de cadastro
     Quando clico em "Cadastre-se para fazer entregas" no formulário
@@ -84,7 +85,7 @@ Funcionalidade: Cadastro de Entregador Buger Eats
       | Método de entrega | Selecione o método de entrega               |
       | CNH               | Adicione uma foto da sua CNH                |
 
-@validacao_cpf @negativo 
+  @negative @validation_cpf
 Esquema do Cenário: Cadastro com CPF inválido
   Dado que estou na pagina de cadastro
   Quando preencho o CPF com "<cpf_invalido>"

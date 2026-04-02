@@ -55,7 +55,6 @@ class BasePage(ABC):
         print(f'OK: elemento visivel: {locator}')
         return locator
 
-    # Useful for hidden or late elements, such as file upload inputs.
     def wait_element_present(
         self, locator_tuple: Locator, timeout: int = 10
     ) -> WebElement:

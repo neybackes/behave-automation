@@ -1,4 +1,4 @@
-import behave
+﻿import behave
 import behave.runner
 
 from automation.pages.delivery_page import DeliveryPage
@@ -51,7 +51,7 @@ def step_ver_botao(context: behave.runner.Context) -> None:
     context.page.assert_button(expected_text)
 
 
-@behave.when('clico em "Cadastre-se para fazer entregas"')  # contexto
+@behave.when('clico em "Cadastre-se para fazer entregas"')
 @behave.when('clico no botão "Cadastre-se para fazer entregas"')
 def step_clicar_botao(context: behave.runner.Context) -> None:
     expected_text = 'Cadastre-se para fazer entregas'
@@ -59,7 +59,7 @@ def step_clicar_botao(context: behave.runner.Context) -> None:
     context.page = DeliveryPage(context.driver)
 
 
-@behave.then('devo ser direcionado para a pagina de cadastro')  # contexto
+@behave.then('devo ser direcionado para a pagina de cadastro')
 @behave.then('devo ser redirecionado para "/deliver"')
 def step_redirecionado_deliver(context: behave.runner.Context) -> None:
     context.page.assert_on_page()
