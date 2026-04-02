@@ -1,31 +1,40 @@
-"""
-Environment setup para Behave
-Configura driver, contexto e hooks
-"""
+import sys
+from pathlib import Path
 
-import behave.model  # type: ignore
-import behave.runner  # type: ignore
+import behave.model
+import behave.runner
 
-from support.drivers.driver_manager import DriverManager
-from support.utils.env_config import EnvConfig
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+SRC_PATH = PROJECT_ROOT / 'src'
+if str(SRC_PATH) not in sys.path:
+    sys.path.insert(0, str(SRC_PATH))
+
+from automation.config.env_config import EnvConfig  # noqa: E402
+from automation.core.driver_manager import DriverManager  # noqa: E402
+from automation.utils.logger import setup_logger  # noqa: E402
+
+env = EnvConfig()
+logger = setup_logger(
+    name='QA',
+    level=env.get_log_level(),
+    silence_external=env.silence_external_logs(),
+    show_ok_logs=env.show_ok_logs(),
+)
 
 
 def before_all(context: behave.runner.Context) -> None:
-    print('\n=== Iniciando Testes de Automação ===\n')
+    logger.debug('=== Starting test run ===')
 
 
 def before_scenario(
     context: behave.runner.Context, scenario: behave.model.Scenario
 ) -> None:
-    print(f'\nExecutando: {scenario.name}')
+    logger.debug(f'Running: {scenario.name}')
 
-    # Carrega configurações de ambiente
-    env = EnvConfig()
     context.base_url = env.get_base_url()
-
-    # Cria instância do driver com opções para suprimir logs
     context.driver = DriverManager.create_chrome_driver(
-        headless=env.is_headless(), implicit_wait=env.get_timeout()
+        headless=env.is_headless(),
+        implicit_wait=env.get_timeout(),
     )
 
 
@@ -33,15 +42,13 @@ def after_scenario(
     context: behave.runner.Context, scenario: behave.model.Scenario
 ) -> None:
     if scenario.status == 'failed':
-        print(f'\n❌ Cenário FALHOU: {scenario.name}')
-
+        logger.error(f'Scenario FAILED: {scenario.name}')
     else:
-        print(f'\n✅ Cenário PASSOU: {scenario.name}')
+        logger.info(f'Scenario PASSED: {scenario.name}')
 
     if hasattr(context, 'driver'):
         DriverManager.close_driver(context.driver)
 
 
 def after_all(context: behave.runner.Context) -> None:
-
-    print('\n=== Testes Finalizados ===\n')
+    logger.debug('=== Test run finished ===')
